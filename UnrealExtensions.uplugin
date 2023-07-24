@@ -1,0 +1,29 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "UnrealExtensions",
+	"Description": "UnrealExtensions",
+	"Category": "Scripting Languages",
+	"CreatedBy": "L",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"EnabledByDefault": true,
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"Installed": true,
+    "Modules": [
+		{
+        "Name": "UnrealExtensions",
+        "Type": "Runtime",
+        "LoadingPhase": "PostEngineInit"
+        },
+			{
+				"Name": "UnrealEditorExtensions",
+				"Type": "Editor",
+				"LoadingPhase": "PostEngineInit"
+			}
+    ]
+}
