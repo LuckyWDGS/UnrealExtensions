@@ -2,8 +2,10 @@
 
 #include "ActorFactories/ActorFactory.h"
 #include "AssetRegistry/IAssetRegistry.h"
+#include "AssetRegistry/AssetRegistryModule.h"
 #include "AssetSelection.h"
 #include "AssetToolsModule.h"
+#include "AnimationEditorUtils.h"
 
 #include "Blutility/Public/EditorUtilitySubsystem.h"
 #include "Blutility/Classes/EditorUtilityWidgetBlueprint.h"
@@ -15,15 +17,15 @@
 #include <Engine/DataTable.h> 
 #include "Editor.h"
 #include "Editor/EditorEngine.h"
-#include "EditorStyleSet.h"
 
 
-
+#include "Factories/AnimSequenceFactory.h"
 #include "Framework/Commands/UICommandList.h"
 
 #include "GameFramework/GameModeBase.h"
 #include "GameFramework/WorldSettings.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Kismet/BlueprintPathsLibrary.h"
 #include "Kismet/KismetStringLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/KismetRenderingLibrary.h"
@@ -49,6 +51,7 @@
 #include "Toolkits/AssetEditorToolkitMenuContext.h"
 
 #include "ObjectTools.h"
+
 
 
 UObject* UUnrealEditorExtensionsBPFLibrary::GetOpenObjecFromToolMenuContext(const FToolMenuContext& InContext)
@@ -241,6 +244,35 @@ void UUnrealEditorExtensionsBPFLibrary::ExecuteMigrateAsset(UObject* Asset)
         AssetToolsModule.Get().MigratePackages(PackageNames);
 
     }
+}
+
+void UUnrealEditorExtensionsBPFLibrary::NewAnimAssetToDisk(UAnimSequence* Animation, FString AssetPath)
+{
+    //增加默认路径
+    AssetPath = "/Game/" + AssetPath;
+    if (UBlueprintPathsLibrary::FileExists(AssetPath))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("文件存在"));
+        return;
+    }
+    FString AssetName = FPaths::GetBaseFilename(AssetPath);
+
+    // Create a new package for the duplicated AnimSequence object
+    UPackage* Package = CreatePackage(nullptr, *AssetPath);
+
+    // Duplicate the source AnimSequence object
+    UAnimSequence* DuplicatedAnimSequence = DuplicateObject<UAnimSequence>(Animation, Package);
+
+    // Rename the duplicated AnimSequence object
+    DuplicatedAnimSequence->Rename(*AssetName, Package);
+
+    // Mark the package as dirty and notify the asset registry of the new asset
+    Package->SetDirtyFlag(true);
+    FAssetRegistryModule::AssetCreated(DuplicatedAnimSequence);
+
+    // Save the duplicated AnimSequence object to disk
+    FString PackageFileName = FPackageName::LongPackageNameToFilename(Package->GetName(), FPackageName::GetAssetPackageExtension());
+    UPackage::SavePackage(Package, DuplicatedAnimSequence, EObjectFlags::RF_Public | EObjectFlags::RF_Standalone, *PackageFileName, GError, nullptr, true, true, SAVE_NoError);
 }
 
 bool UUnrealEditorExtensionsBPFLibrary::IsLevelFromAssetData(const FAssetData& AssetData)

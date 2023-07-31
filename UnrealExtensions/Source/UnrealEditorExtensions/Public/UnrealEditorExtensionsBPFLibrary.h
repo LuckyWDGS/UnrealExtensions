@@ -63,6 +63,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Asset")
 		static void ExecuteMigrateAsset(UObject* Asset);
 
+	/* 创建动画资产
+	 * @param	Animation				动画序列对象
+	 * @param	AssetPath				资产保存的路径默认带/Game/直接填写后面路径即可
+	 */
+	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Asset")
+		static void NewAnimAssetToDisk(UAnimSequence* Animation,FString AssetPath);
+
 	/*这个资产是否为关卡类*/
 	UFUNCTION(BlueprintPure, Category = "UnrealEditorExtensions|Asset")
 		static bool  IsLevelFromAssetData(const FAssetData& AssetData);
