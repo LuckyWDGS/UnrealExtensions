@@ -155,7 +155,7 @@ bool UUnrealEditorExtensionsBPFLibrary::IsMouseInMainViewport(const UObject* Wor
 
             FCollisionQueryParams LineParams(SCENE_QUERY_STAT(FocusOnPoint), true);
 
-            if (GCurrentLevelEditingViewportClient->GetWorld()->LineTraceSingleByObjectType(HitResult, WorldOrigin, WorldOrigin + WorldDirection * HALF_WORLD_MAX, FCollisionObjectQueryParams(ECC_WorldStatic), LineParams)) {
+            if (GCurrentLevelEditingViewportClient->GetWorld()->LineTraceSingleByObjectType(HitResult, WorldOrigin, WorldOrigin + WorldDirection * HALF_WORLD_MAX, FCollisionObjectQueryParams::AllObjects, LineParams)) {
                 ZoomToPoint = HitResult.ImpactPoint;
                 return true;
             }
@@ -337,6 +337,18 @@ UObject* UUnrealEditorExtensionsBPFLibrary::GetAssetOfPath(const FString FilePat
         return nullptr;
     }
     return nullptr;
+}
+
+void UUnrealEditorExtensionsBPFLibrary::SetAssetParent(const FAssetData& AssetData, TSubclassOf<UObject>NewParentClass)
+{
+    if (AssetData.GetAsset()) {
+        UBlueprint* Blueprint = Cast<UBlueprint>(AssetData.GetAsset());
+        if (Blueprint) {
+            Blueprint->ParentClass = NewParentClass;
+            Blueprint->MarkPackageDirty();
+            return;
+        }
+    }
 }
 
 bool UUnrealEditorExtensionsBPFLibrary::SetWorldSettingGameModeGameState(bool CurrentLevel, const UObject* WorldContextObject, AWorldSettings* WorldSettings, TSubclassOf<AGameModeBase> GameMode, TSubclassOf<AGameStateBase> GameState)

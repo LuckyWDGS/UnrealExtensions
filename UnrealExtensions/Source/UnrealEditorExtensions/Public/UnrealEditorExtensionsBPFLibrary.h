@@ -22,9 +22,11 @@ public:
 	//获取内容浏览器选中的文件夹
 	UFUNCTION(BlueprintPure, Category = "UnrealEditorExtensions|ContentBrowser")
 		static TArray<FString> GetSelectedFolders();
+
 	//获取所有的工具菜单栏
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Tool Menus")
 		static TMap<FName, UToolMenu*> GetAllMenu();
+
 	/*获取资产数据的工厂类*/
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|ActorFactory")
 		static UActorFactory* GetActorFactory(const FAssetData& AssetData, bool bRequireValidObject = false);
@@ -54,7 +56,7 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Properties")
 		static TArray<FString> GetAllProperties(UClass* Class);
-
+/*************************************************资产操作*************************************************************/
 	//从内容浏览器定位资产目标
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Asset")
 		static void FindAssetToBrowser(UObject* Asset);
@@ -97,6 +99,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Asset")
 		static  UObject* GetAssetOfPath(const FString FilePath, FString& FileName);
 
+	/* 重设资产的父类
+	 * @param	AssetData				需要改变父类的资产数据
+	 * @param	NewParentClass			新的父类
+	 */
+	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Asset")
+		static void SetAssetParent(const FAssetData& AssetData, TSubclassOf<UObject>NewParentClass);
+
 	/* 设置关卡的游戏模式。可以从资产的关卡设置，也可以从当前关卡设置
 	 * @param	CurrentLevel			是否设置WorldContextObject的关卡的默认模式
 	 * @param	WorldSettings			资产关卡的WorldSetting。
@@ -106,9 +115,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Setting", meta = (WorldContext = "WorldContextObject"))
 		static bool SetWorldSettingGameModeGameState(bool CurrentLevel, const UObject* WorldContextObject, AWorldSettings* WorldSettings, TSubclassOf<AGameModeBase> GameMode, TSubclassOf<AGameStateBase> GameState);
 
+/******************************************************************编辑器工具类函数*******************************************************/
 
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Editor")
 		static void CloseAllAreas();
+
 	/* 运行编辑器蓝图或控件
 	 * @param	Asset			资产名称
 	 */
