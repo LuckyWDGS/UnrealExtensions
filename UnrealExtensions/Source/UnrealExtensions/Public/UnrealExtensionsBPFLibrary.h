@@ -100,6 +100,16 @@ public:
 		//将颜色数据提取
 		static void ColorToImage(const FString& InImagePath, TArray<FColor>InColor, int32 InWidth, int32 InHight);//将颜色数据提取
 
+/******************************************************************音频类函数***********************************************************************/
+	/* 字节数组转换成音频Sound对象
+	*  @param		RawWaveData				音频数据流
+	*  @param		SavePath				音频需要保存的路径，需在IsSave为true时生效
+	*  @param		IsSave					音频是否需要保存到本地
+	*  @param		return					返回一个USoundWave对象
+	*/
+		UFUNCTION(BlueprintCallable, Category = "ExtendedContent|音频")
+			static class USoundWave* SoundForByteData(TArray<uint8> RawWaveData,FString SavePath,bool IsSave=false);
+
 private:
 	
 };

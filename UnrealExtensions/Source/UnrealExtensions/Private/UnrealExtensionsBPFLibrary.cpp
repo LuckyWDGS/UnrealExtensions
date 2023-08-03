@@ -326,6 +326,40 @@ void UUnrealExtensionsBPFLibrary::ColorToImage(const FString& InImagePath, TArra
 
 }
 
+USoundWave* UUnrealExtensionsBPFLibrary::SoundForByteData(TArray<uint8> RawWaveData, FString SavePath, bool IsSave)
+{
+    if (IsSave) {
+        FFileHelper::SaveArrayToFile(RawWaveData, *SavePath);
+    }
+    FWaveModInfo WaveInfo;
+    if (!WaveInfo.ReadWaveInfo(RawWaveData.GetData(), RawWaveData.Num()))
+    {
+        return nullptr;
+    }
+
+    USoundWave* Sound = NewObject<USoundWave>();
+
+    int32 ChannelCount = (int32)*WaveInfo.pChannels;
+    check(ChannelCount > 0);
+
+    int32 SizeOfSample = (*WaveInfo.pBitsPerSample) / 8;
+
+    int32 NumSamples = WaveInfo.SampleDataSize / SizeOfSample;
+    int32 NumFrames = NumSamples / ChannelCount;
+
+    Sound->RawData.Lock(LOCK_READ_WRITE);
+    void* LockedData = Sound->RawData.Realloc(RawWaveData.Num());
+    FMemory::Memcpy(LockedData, RawWaveData.GetData(), RawWaveData.Num());
+    Sound->RawData.Unlock();
+
+    Sound->Duration = (float)NumFrames / *WaveInfo.pSamplesPerSec;
+    Sound->SetSampleRate(*WaveInfo.pSamplesPerSec);
+    Sound->NumChannels = ChannelCount;
+    Sound->TotalSamples = *WaveInfo.pSamplesPerSec * Sound->Duration;
+
+    return Sound;
+}
+
 
 
 
