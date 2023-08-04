@@ -107,7 +107,7 @@ public:
 	*  @param		IsSave					音频是否需要保存到本地
 	*  @param		return					返回一个USoundWave对象
 	*/
-		UFUNCTION(BlueprintCallable, Category = "ExtendedContent|音频")
+		UFUNCTION(BlueprintCallable, Category = "ExtendedContent|音频",meta = (AdvancedDisplay = "1", UnsafeDuringActorConstruction = "true"))
 			static class USoundWave* SoundForByteData(TArray<uint8> RawWaveData,FString SavePath,bool IsSave=false);
 
 private:
