@@ -18,11 +18,11 @@ void FUnrealEditorExtensionsModule::ShutdownModule()
 
 void FUnrealEditorExtensionsModule::InitEditorBlueprint()
 {
-	FString Path = L"/Game/Extender/SimuEditorUtilityBlueprint.SimuEditorUtilityBlueprint";
+	FString Path = L"/Game/Extender/SimuEditorUtilityBlueprint";
 	FString Return;
 	UObject* Asset = UUnrealEditorExtensionsBPFLibrary::GetAssetOfPath(Path, Return);
 	if (Asset) {
-		UUnrealEditorExtensionsBPFLibrary::ExecuteRun(UUnrealEditorExtensionsBPFLibrary::GetAssetOfPath(Path, Return));
+		UUnrealEditorExtensionsBPFLibrary::ExecuteRun(Asset);
 	}
 }
 

@@ -2,7 +2,7 @@
 #include "AssetRegistry/IAssetRegistry.h"
 
 #include "Components/SceneCaptureComponent2D.h"//SceneCaptureComponent2D组件的头文件
-
+#include "Components/Widget.h"
 #include <Engine/DataTable.h> 
 #include "EngineUtils.h"
 #include "Engine/Texture2D.h" 
@@ -360,6 +360,21 @@ USoundWave* UUnrealExtensionsBPFLibrary::SoundForByteData(TArray<uint8> RawWaveD
     return Sound;
 }
 
+void UUnrealExtensionsBPFLibrary::TriggerHover(UWidget* Widget,bool bIsHovered)
+{
+    struct MySwidget:public SWidget
+    {
+    public:
+        void SetSwidgetHover(bool bIsHover) {
+            bIsHovered = bIsHover;
+        }
+    };
+    if (Widget) {
+        SWidget* SafeWidget = Widget->GetCachedWidget().Get();
+        ((MySwidget*)SafeWidget)->SetSwidgetHover(bIsHovered);
+        return;
+    }
+}
 
 
 

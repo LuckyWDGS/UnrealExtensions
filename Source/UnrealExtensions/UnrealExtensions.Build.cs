@@ -40,6 +40,7 @@ public class UnrealExtensions : ModuleRules
 				"SlateCore",
 				"AssetRegistry",
 				"ImageWriteQueue",
+				"UMG"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

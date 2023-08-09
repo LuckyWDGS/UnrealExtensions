@@ -131,7 +131,13 @@ public:
 	 */
 	UFUNCTION(BlueprintPure, Category = "UnrealEditorExtensions|Editor")
 		static UWorld* GetEngineWorldContextObject();
-	
+/******************************************************************场景视口工具类函数*******************************************************/
+	/* 选定场景中的actor类
+	 * @param	Actor			设置要操作的Actor
+	 * @param	IsSelected		是否要选中此Actor
+	 */
+	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Editor")
+		static void SelectedSceneActor(AActor* Actor,bool IsSelected=true);
 private:
 	
 };

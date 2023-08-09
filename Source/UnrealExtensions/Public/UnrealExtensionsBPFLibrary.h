@@ -7,6 +7,7 @@
 #include "UnrealExtensionsBPFLibrary.generated.h"
 
 
+
 UCLASS()
 class UNREALEXTENSIONS_API UUnrealExtensionsBPFLibrary : public UBlueprintFunctionLibrary 
 {
@@ -107,9 +108,12 @@ public:
 	*  @param		IsSave					音频是否需要保存到本地
 	*  @param		return					返回一个USoundWave对象
 	*/
-		UFUNCTION(BlueprintCallable, Category = "ExtendedContent|音频",meta = (AdvancedDisplay = "1", UnsafeDuringActorConstruction = "true"))
+		UFUNCTION(BlueprintCallable, Category = "ExtendedContent|音频")
 			static class USoundWave* SoundForByteData(TArray<uint8> RawWaveData,FString SavePath,bool IsSave=false);
 
+/******************************************************************UMG类工具函数***********************************************************************/
+		UFUNCTION(BlueprintCallable, Category = "ExtendedContent|UMG工具")
+			static void TriggerHover(UWidget* Widget, bool bIsHovered =true);
 private:
 	
 };

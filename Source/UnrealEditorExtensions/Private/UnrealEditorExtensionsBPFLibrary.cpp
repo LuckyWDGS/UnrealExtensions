@@ -109,10 +109,14 @@ AActor* UUnrealEditorExtensionsBPFLibrary:: GetDefaultActor(const FAssetData& As
 
 AActor* UUnrealEditorExtensionsBPFLibrary::CreateActor(const UObject* WorldContextObject, const FAssetData& AssetData, FTransform SpawnTransform)
 {
+    // 开始一个新的事务
+    FScopedTransaction Transaction(FText::FromString("New Creat Actor"));
     UActorFactory* ActorFactory = GetActorFactory(AssetData);
     if (ActorFactory) {
         return ActorFactory->CreateActor(AssetData.GetAsset(), WorldContextObject->GetWorld()->GetCurrentLevel(), SpawnTransform);
     }
+    //取消当前事务
+    Transaction.Cancel();
     return NULL;
 }
 
@@ -321,15 +325,12 @@ AWorldSettings* UUnrealEditorExtensionsBPFLibrary::GetWorldSettingFromAssetData(
 UObject* UUnrealEditorExtensionsBPFLibrary::GetAssetOfPath(const FString FilePath, FString& FileName)
 {
     if (FilePath.Len() > 0) {
-        FString CurrentFilePath = FilePath;
-        CurrentFilePath = UKismetSystemLibrary::ConvertToAbsolutePath(CurrentFilePath);//转换成绝对路径
-        CurrentFilePath = *FPaths::GetBaseFilename(UKismetStringLibrary::Replace(CurrentFilePath, UKismetSystemLibrary::ConvertToAbsolutePath(*FPaths::ProjectContentDir()), "/Game/"), false);//由内容路径替换为游戏路径Content to Game
-        FName PackgePath = *FPaths::GetPath(CurrentFilePath);
+        FName PackgePath = *FPaths::GetPath(FilePath);
         TArray<FAssetData> OutAssetData;
         const IAssetRegistry& AssetRegisty = IAssetRegistry::GetChecked();
-        AssetRegisty.GetAssetsByPath(PackgePath, OutAssetData, false, true);//遍历索引目录下的所有资产
+        AssetRegisty.GetAssetsByPath(PackgePath, OutAssetData, false, false);//遍历索引目录下的所有资产
         for (auto i : OutAssetData) {
-            if (i.PackageName.ToString() == CurrentFilePath) {
+            if (i.PackageName.ToString() == FilePath) {
                 FileName = i.PackageName.ToString();
                 return i.GetAsset();
             }
@@ -396,6 +397,11 @@ UWorld* UUnrealEditorExtensionsBPFLibrary::GetEngineWorldContextObject()
         return WorldContext->World();
     }
     return nullptr;
+}
+
+void UUnrealEditorExtensionsBPFLibrary::SelectedSceneActor(AActor* Actor, bool IsSelected)
+{
+    GEditor->SelectActor(Actor, IsSelected, true);
 }
 
 

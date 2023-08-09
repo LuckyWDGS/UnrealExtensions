@@ -42,7 +42,9 @@ public class UnrealEditorExtensions : ModuleRules
 				"AssetRegistry",
 				"ToolMenus",
 				"UMGEditor",
+				"UMG",
 				"Blutility",
+				
 			
 				// ... add private dependencies that you statically link with here ...	
 			}
