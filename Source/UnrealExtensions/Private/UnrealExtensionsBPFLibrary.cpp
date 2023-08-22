@@ -221,9 +221,9 @@ UTexture2D* UUnrealExtensionsBPFLibrary::LoadTexture2D(const FString& ImagePath,
                 IsValid = true;
                 OutWidth = ImageWrapper->GetWidth();
                 OutHeight = ImageWrapper->GetHeight();
-                void* TextureData = Texture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
+                void* TextureData = Texture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
                 FMemory::Memcpy(TextureData, UncompressedRGBA.GetData(), UncompressedRGBA.Num());
-                Texture->PlatformData->Mips[0].BulkData.Unlock();
+                Texture->GetPlatformData()->Mips[0].BulkData.Unlock();
                 Texture->UpdateResource();
             }
         }
@@ -358,22 +358,6 @@ USoundWave* UUnrealExtensionsBPFLibrary::SoundForByteData(TArray<uint8> RawWaveD
     Sound->TotalSamples = *WaveInfo.pSamplesPerSec * Sound->Duration;
 
     return Sound;
-}
-
-void UUnrealExtensionsBPFLibrary::TriggerHover(UWidget* Widget,bool bIsHovered)
-{
-    struct MySwidget:public SWidget
-    {
-    public:
-        void SetSwidgetHover(bool bIsHover) {
-            bIsHovered = bIsHover;
-        }
-    };
-    if (Widget) {
-        SWidget* SafeWidget = Widget->GetCachedWidget().Get();
-        ((MySwidget*)SafeWidget)->SetSwidgetHover(bIsHovered);
-        return;
-    }
 }
 
 

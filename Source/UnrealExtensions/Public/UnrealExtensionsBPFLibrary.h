@@ -112,8 +112,6 @@ public:
 			static class USoundWave* SoundForByteData(TArray<uint8> RawWaveData,FString SavePath,bool IsSave=false);
 
 /******************************************************************UMG类工具函数***********************************************************************/
-		UFUNCTION(BlueprintCallable, Category = "ExtendedContent|UMG工具")
-			static void TriggerHover(UWidget* Widget, bool bIsHovered =true);
 private:
 	
 };
