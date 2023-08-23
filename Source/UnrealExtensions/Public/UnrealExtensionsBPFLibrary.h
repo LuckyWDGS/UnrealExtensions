@@ -108,8 +108,15 @@ public:
 	*  @param		IsSave					音频是否需要保存到本地
 	*  @param		return					返回一个USoundWave对象
 	*/
-		UFUNCTION(BlueprintCallable, Category = "ExtendedContent|音频")
-			static class USoundWave* SoundForByteData(TArray<uint8> RawWaveData,FString SavePath,bool IsSave=false);
+	UFUNCTION(BlueprintCallable, Category = "ExtendedContent|音频")
+		static class USoundWave* SoundFormByteData(TArray<uint8> RawWaveData,FString SavePath,bool IsSave=false);
+
+		/* 外部文件转换成音频Sound对象
+	*  @param		fileName				外部音频文件名
+	*  @param		return					返回一个USoundWave对象
+	*/
+	UFUNCTION(BlueprintPure, Category = "ExtendedContent|音频")
+		static class USoundWave* SoundFormFile(const FString FileName);
 
 /******************************************************************UMG类工具函数***********************************************************************/
 private:
