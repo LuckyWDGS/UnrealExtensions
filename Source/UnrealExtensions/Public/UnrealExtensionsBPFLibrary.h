@@ -76,7 +76,7 @@ public:
 		static UTexture2D* LoadTexture2D(const FString& ImagePath, bool& IsValid, int32& OutWidth, int32& OutHeight);
 
 	/*
-		* 正则匹配 如果匹配成功，则返回匹配到的字符串，否则返回false
+		* 转换并调整图像大小
 		* @param	ImagePath			要处理的图片路径
 		* @param	SaveFilePath		要保存的图片路径包含扩展名.jpg
 		* @param	NewWidth			新的分辨率宽的大小 
