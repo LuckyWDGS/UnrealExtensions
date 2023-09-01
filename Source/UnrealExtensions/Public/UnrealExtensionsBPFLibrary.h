@@ -86,7 +86,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ExtendedContent|Image Conversion")
 		static bool ConvertAndResizeImage(const FString& ImagePath, const FString& SaveFilePath,  int32 NewWidth, int32 NewHeight, int32 Quality = 75);
 
-	/* 从资产中获取当前蓝图的对象
+	/* 从UobjectAssetData中获取当前蓝图的对象
 	*  @param		AssetData			资产数据
 	*/
 	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|UObject")
@@ -112,8 +112,7 @@ public:
 			static class USoundWave* SoundForByteData(TArray<uint8> RawWaveData,FString SavePath,bool IsSave=false);
 
 /******************************************************************UMG类工具函数***********************************************************************/
-		UFUNCTION(BlueprintCallable, Category = "ExtendedContent|UMG工具")
-			static void TriggerHover(UWidget* Widget, bool bIsHovered =true);
+
 private:
 	
 };
