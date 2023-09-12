@@ -26,6 +26,12 @@ public:
 	*/
 	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|Data")
 		static TArray<FString> LoadTXT(const FString TXTPath, FString& OutTXT);
+	/* 写入文本
+	* @param	SaveString				要保存的文字内容
+	* @param	FileName				写入到指定的文件
+	*/
+	UFUNCTION(BlueprintCallable, Category = "UnrealExtensions|Data")
+		static bool WriteTXT(const FString SaveString, const FString FileName);
 
    /* 获取文件或文件夹数据，包括文件创建时间大小等信息
 	* @param	InPath				文件路径或者文件夹路径
@@ -72,7 +78,7 @@ public:
 		static  FString GetLevelPath(const UObject* WorldContextObject);
 
 	//载入图像
-	UFUNCTION(BlueprintPure,Category = "ExtendedContent|File")
+	UFUNCTION(BlueprintCallable,Category = "ExtendedContent|Texture")
 		static UTexture2D* LoadTexture2D(const FString& ImagePath, bool& IsValid, int32& OutWidth, int32& OutHeight);
 
 	/*

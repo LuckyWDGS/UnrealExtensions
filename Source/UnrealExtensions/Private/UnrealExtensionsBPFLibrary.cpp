@@ -51,6 +51,11 @@ TArray<FString> UUnrealExtensionsBPFLibrary::LoadTXT(const FString TXTPath, FStr
 
 }
 
+bool UUnrealExtensionsBPFLibrary::WriteTXT(const FString SaveString, const FString FileName)
+{
+    return FFileHelper::SaveStringToFile(SaveString, *FileName);
+}
+
 void UUnrealExtensionsBPFLibrary::GetStatData(const FString InPath, FFileData& FileData)
 {
 
