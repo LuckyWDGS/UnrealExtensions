@@ -26,6 +26,12 @@ public:
 	*/
 	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|Data")
 		static TArray<FString> LoadTXT(const FString TXTPath, FString& OutTXT);
+	/* 写入文本
+	* @param	SaveString				要保存的文字内容
+	* @param	FileName				写入到指定的文件
+	*/
+	UFUNCTION(BlueprintCallable, Category = "UnrealExtensions|Data")
+		static bool WriteTXT(const FString SaveString, const FString FileName);
 
    /* 获取文件或文件夹数据，包括文件创建时间大小等信息
 	* @param	InPath				文件路径或者文件夹路径
@@ -72,7 +78,7 @@ public:
 		static  FString GetLevelPath(const UObject* WorldContextObject);
 
 	//载入图像
-	UFUNCTION(BlueprintPure,Category = "ExtendedContent|File")
+	UFUNCTION(BlueprintCallable,Category = "ExtendedContent|Texture")
 		static UTexture2D* LoadTexture2D(const FString& ImagePath, bool& IsValid, int32& OutWidth, int32& OutHeight);
 
 	/*
@@ -86,7 +92,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ExtendedContent|Image Conversion")
 		static bool ConvertAndResizeImage(const FString& ImagePath, const FString& SaveFilePath,  int32 NewWidth, int32 NewHeight, int32 Quality = 75);
 
-	/* 从资产中获取当前蓝图的对象
+	/* 从UobjectAssetData中获取当前蓝图的对象
 	*  @param		AssetData			资产数据
 	*/
 	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|UObject")
@@ -108,17 +114,11 @@ public:
 	*  @param		IsSave					音频是否需要保存到本地
 	*  @param		return					返回一个USoundWave对象
 	*/
-	UFUNCTION(BlueprintCallable, Category = "ExtendedContent|音频")
-		static class USoundWave* SoundFormByteData(TArray<uint8> RawWaveData,FString SavePath,bool IsSave=false);
-
-		/* 外部文件转换成音频Sound对象
-	*  @param		fileName				外部音频文件名
-	*  @param		return					返回一个USoundWave对象
-	*/
-	UFUNCTION(BlueprintPure, Category = "ExtendedContent|音频")
-		static class USoundWave* SoundFormFile(const FString FileName);
+		UFUNCTION(BlueprintCallable, Category = "ExtendedContent|音频")
+			static class USoundWave* SoundForByteData(TArray<uint8> RawWaveData,FString SavePath,bool IsSave=false);
 
 /******************************************************************UMG类工具函数***********************************************************************/
+
 private:
 	
 };
