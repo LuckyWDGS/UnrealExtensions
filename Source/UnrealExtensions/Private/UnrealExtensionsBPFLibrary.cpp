@@ -331,7 +331,7 @@ void UUnrealExtensionsBPFLibrary::ColorToImage(const FString& InImagePath, TArra
 
 }
 
-USoundWave* UUnrealExtensionsBPFLibrary::SoundForByteData(TArray<uint8> RawWaveData, FString SavePath, bool IsSave)
+USoundWave* UUnrealExtensionsBPFLibrary::SoundFormByteData(TArray<uint8> RawWaveData, FString SavePath, bool IsSave)
 {
     if (IsSave) {
         FFileHelper::SaveArrayToFile(RawWaveData, *SavePath);
