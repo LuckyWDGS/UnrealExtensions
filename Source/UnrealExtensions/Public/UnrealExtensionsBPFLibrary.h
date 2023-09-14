@@ -16,6 +16,7 @@ class UNREALEXTENSIONS_API UUnrealExtensionsBPFLibrary : public UBlueprintFuncti
 public: 
 	/* 获取当前的场景设置
 	 */
+
 	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|WorldSettings", meta = (WorldContext = "WorldContextObject"))
 		static  AWorldSettings* GetWorldSetting(const UObject* WorldContextObject);
 
@@ -57,7 +58,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UnrealExtensions|Operate")
 		static bool FindDirectory(const FString InPath,TArray<FString>&OutPutFolder,bool RemovePath=false);
 
-	/* Comand打开文件
+	/* 打开文件
 	 * @param	InPath			需要打开的文件路径
 	 */
 	UFUNCTION(BlueprintCallable, Category = "UnrealExtensions|Operate")
@@ -72,19 +73,11 @@ public:
 	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|Regex")
 		static bool RegexMatch(const FString& Str, const FString& Pattern, TArray<FString>& Result);
 
-	/* 获取关卡的游戏路径  /Game/../../
-	* @param	WorldContextObject	世界上下文对象
-	*/
+	///获取关卡的游戏路径  /Game/../../
 	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|Paths", meta = (WorldContext = "WorldContextObject"))
 		static  FString GetLevelPath(const UObject* WorldContextObject);
 
-	/*
-	* 加载图像来自硬盘
-	* @param	ImagePath	图像路径
-	* @param	IsValid		是否有效
-	* @param	OutWidth	返回图像的宽
-	* @param	OutHeight	返回图像的高
-	*/
+	//载入图像
 	UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "2"),Category = "ExtendedContent|Texture")
 		static UTexture2D* LoadTexture2D(const FString& ImagePath, bool& IsValid, int32& OutWidth, int32& OutHeight);
 
@@ -124,22 +117,8 @@ public:
 		UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "1"), Category = "ExtendedContent|Sound")
 			static class USoundWave* SoundFormByteData(TArray<uint8> RawWaveData,FString SavePath,bool IsSave=false);
 
-	/* 音频文件转换成Sound对象
-	*  @param		FileName				文件路径
-	*  @param		return					返回一个USoundWave对象
-	*/
-		UFUNCTION(BlueprintCallable, Category = "ExtendedContent|Sound")
-			static class USoundWave* SoundFormFile(FString FileName);
-
-
 /******************************************************************UMG类工具函数***********************************************************************/
 
-/******************************************************************Calculate函数***********************************************************************/
-	
-	/* 计算FPS计时
-	*/
-		UFUNCTION(BlueprintPure, Category = "ExtendedContent|Calculate",meta = (WorldContext = "WorldContextObject"))
-			static int CalculateFPSTimings(const UObject* WorldContextObject);
 private:
 	
 };
