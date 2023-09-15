@@ -204,9 +204,9 @@ UTexture2D* UUnrealEditorExtensionsBPFLibrary::GetObjectThumbnail(const FAssetDa
                 Texture = UTexture2D::CreateTransient(ObjThumnail->GetImageWidth(), ObjThumnail->GetImageHeight(), PF_B8G8R8A8);
                 if (Texture != nullptr)
                 {
-                    void* TextureData = Texture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
+                    void* TextureData = Texture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
                     FMemory::Memcpy(TextureData, ThumnailDatat.GetData(), ThumnailDatat.Num());
-                    Texture->GetPlatformData()->Mips[0].BulkData.Unlock();
+                    Texture->PlatformData->Mips[0].BulkData.Unlock();
                     Texture->UpdateResource();
                 }
         }
@@ -274,7 +274,7 @@ void UUnrealEditorExtensionsBPFLibrary::NewAnimAssetToDisk(UAnimSequence* Animat
 
     // Save the duplicated AnimSequence object to disk
     FString PackageFileName = FPackageName::LongPackageNameToFilename(Package->GetName(), FPackageName::GetAssetPackageExtension());
-    UPackage::SavePackage(Package, DuplicatedAnimSequence,*PackageFileName, FSavePackageArgs());
+    UPackage::SavePackage(Package, DuplicatedAnimSequence, EObjectFlags::RF_Public | EObjectFlags::RF_Standalone, *PackageFileName, GError, nullptr, true, true, SAVE_NoError);
 }
 
 bool UUnrealEditorExtensionsBPFLibrary::IsLevelFromAssetData(const FAssetData& AssetData)

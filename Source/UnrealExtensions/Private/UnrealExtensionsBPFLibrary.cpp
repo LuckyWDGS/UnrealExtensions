@@ -225,9 +225,9 @@ UTexture2D* UUnrealExtensionsBPFLibrary::LoadTexture2D(const FString& ImagePath,
                 IsValid = true;
                 OutWidth = ImageWrapper->GetWidth();
                 OutHeight = ImageWrapper->GetHeight();
-                void* TextureData = Texture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
+                void* TextureData = Texture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
                 FMemory::Memcpy(TextureData, UncompressedRGBA.GetData(), UncompressedRGBA.Num());
-                Texture->GetPlatformData()->Mips[0].BulkData.Unlock();
+                Texture->PlatformData->Mips[0].BulkData.Unlock();
                 Texture->UpdateResource();
             }
         }
@@ -317,13 +317,13 @@ void UUnrealExtensionsBPFLibrary::ColorToImage(const FString& InImagePath, TArra
     }
     else
     {
-        TArray64<uint8>OutPNG;
+        TArray<uint8>OutPNG;
 
         for (FColor& color : InColor)
         {
             color.A = 255;
         }
-        FImageUtils::PNGCompressImageArray(InWidth, InHight, InColor, OutPNG);
+        FImageUtils::CompressImageArray(InWidth, InHight, InColor, OutPNG);
         FFileHelper::SaveArrayToFile(OutPNG, *InImagePath);
 
     }
@@ -348,10 +348,11 @@ USoundWave* UUnrealExtensionsBPFLibrary::SoundFormByteData(TArray<uint8> RawWave
     int32 NumSamples = WaveInfo.SampleDataSize / SizeOfSample;
     int32 NumFrames = NumSamples / ChannelCount;
 
-    SoundWave->RawData.UpdatePayload(FSharedBuffer::Clone(RawWaveData.GetData(), RawWaveData.Num()));
-    SoundWave->RawPCMData = (uint8*)FMemory::Malloc(WaveInfo.SampleDataSize);
-    FMemory::Memcpy(SoundWave->RawPCMData, WaveInfo.SampleDataStart, WaveInfo.SampleDataSize);
-    SoundWave->RawPCMDataSize = WaveInfo.SampleDataSize;
+    SoundWave->RawData.Lock(LOCK_READ_WRITE);
+    void* LockedData = SoundWave->RawData.Realloc(RawWaveData.Num());
+    FMemory::Memcpy(LockedData, RawWaveData.GetData(), RawWaveData.Num());
+    SoundWave->RawData.Unlock();
+
     // Set Sound Wave Info
     SoundWave->Duration = (float)NumFrames / *WaveInfo.pSamplesPerSec;
     SoundWave->SetSampleRate(*WaveInfo.pSamplesPerSec);
