@@ -348,10 +348,11 @@ USoundWave* UUnrealExtensionsBPFLibrary::SoundFormByteData(TArray<uint8> RawWave
     int32 NumSamples = WaveInfo.SampleDataSize / SizeOfSample;
     int32 NumFrames = NumSamples / ChannelCount;
 
-    SoundWave->RawData.UpdatePayload(FSharedBuffer::Clone(RawWaveData.GetData(), RawWaveData.Num()));
-    SoundWave->RawPCMData = (uint8*)FMemory::Malloc(WaveInfo.SampleDataSize);
-    FMemory::Memcpy(SoundWave->RawPCMData, WaveInfo.SampleDataStart, WaveInfo.SampleDataSize);
-    SoundWave->RawPCMDataSize = WaveInfo.SampleDataSize;
+    SoundWave->RawData.Lock(LOCK_READ_WRITE);
+    void* LockedData = SoundWave->RawData.Realloc(RawWaveData.Num());
+    FMemory::Memcpy(LockedData, RawWaveData.GetData(), RawWaveData.Num());
+    SoundWave->RawData.Unlock();
+
     // Set Sound Wave Info
     SoundWave->Duration = (float)NumFrames / *WaveInfo.pSamplesPerSec;
     SoundWave->SetSampleRate(*WaveInfo.pSamplesPerSec);
