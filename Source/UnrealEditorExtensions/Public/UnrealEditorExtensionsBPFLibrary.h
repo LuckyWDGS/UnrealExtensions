@@ -15,7 +15,10 @@ class UNREALEDITOREXTENSIONS_API UUnrealEditorExtensionsBPFLibrary : public UBlu
 
 public: 
 
-	//获取打开的对象
+	/* 根据工具菜单上下文获取打开的对象
+	 * @param	FToolMenuContext		工具菜单上下文。
+	 * @param	return					返回当前工具菜单上下文的使用者。
+	 */
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Path")
 		static UObject* GetOpenObjecFromToolMenuContext(const FToolMenuContext& InContext);
 
@@ -27,41 +30,63 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Tool Menus")
 		static TMap<FName, UToolMenu*> GetAllMenu();
 
-	/*获取资产数据的工厂类*/
+	/* 获取资产数据的工厂类
+	 * @param	FAssetData				资产数据。
+	 * @param	bRequireValidObject		要求有效对象。
+	 */
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|ActorFactory")
 		static UActorFactory* GetActorFactory(const FAssetData& AssetData, bool bRequireValidObject = false);
-
-	/*获取资产类的AActor*/
+	
+	/* 获取资产数据的默认对象
+	 * @param	FAssetData				资产数据。
+	 * @param	return					返回一个A类对象。
+	 */
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|ActorFactory")
 		static AActor* GetDefaultActor(const FAssetData& AssetData);
 
-	/*从资产中生成对象到视口*/
+	/* Editor从资产数据中生成对象到关卡视频
+	 * @param	FAssetData				资产数据。
+	 * @param	SpawnTransform			生成的变换。
+	 */
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|ActorFactory", meta = (WorldContext = "WorldContextObject"))
 		static AActor* CreateActor(const UObject * WorldContextObject,const FAssetData& AssetData,FTransform SpawnTransform);
 
-	/*获取鼠标是否在编辑器视口中*/
+	/* 获取鼠标是否在编辑器视口中
+	 * @param	ZoomToPoint				屏幕坐标。
+	 */
 	UFUNCTION(BlueprintPure, Category = "UnrealEditorExtensions|ViewPort", meta = (WorldContext = "WorldContextObject"))
 		static bool  IsMouseInMainViewport(const UObject* WorldContextObject, FVector &ZoomToPoint);
 
-	/*获取BluePrint类的Description*/
+	/* 获取BluePrint类的Description
+	 * @param	AssetData				资产数据。
+	 * @param	BlueprintDescription	描述信息
+	 */
 	UFUNCTION(BlueprintPure, Category = "UnrealEditorExtensions|BluePrint")
 		static bool  GetBlueprintDescription(const FAssetData& AssetData,FString &BlueprintDescription);
 
-	/*获取资产的缩略图*/
-	UFUNCTION(BlueprintPure, Category = "UnrealEditorExtensions|AssetThumbnail")
+	/* 获取资产的缩略图
+	 * @param	AssetData				资产数据。
+	 * @param	return					返回一个Texture2D
+	 */
+	UFUNCTION(BlueprintPure, Category = "UnrealEditorExtensions|Thumbnail")
 		static UTexture2D*  GetObjectThumbnail(const FAssetData& AssetData);
 
-	/* 获取获取所有属性
+	/* 获取类的所有属性
 	 * @param	Class				类。
 	 */
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Properties")
 		static TArray<FString> GetAllProperties(UClass* Class);
 /*************************************************资产操作*************************************************************/
-	//从内容浏览器定位资产目标
+	
+	/* 获取资产的缩略图
+	 * @param	Asset					需要定位的资产。
+	 */
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Asset")
 		static void FindAssetToBrowser(UObject* Asset);
 
-	//迁移资产
+	/* 迁移资产
+	 * @param	Asset					需要迁移的资产。
+	 */
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Asset")
 		static void ExecuteMigrateAsset(UObject* Asset);
 
@@ -72,16 +97,20 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Asset")
 		static void NewAnimAssetToDisk(UAnimSequence* Animation,FString AssetPath);
 
-	/*这个资产是否为关卡类*/
+	/* 这个资产是否为关卡类
+	 * @param	AssetData				资产数据
+	 */
 	UFUNCTION(BlueprintPure, Category = "UnrealEditorExtensions|Asset")
 		static bool  IsLevelFromAssetData(const FAssetData& AssetData);
 
-	/*获取资产在编辑器上显示的名称*/
+	/* 获取资产类显示颜色
+	 * @param	AssetData				资产数据
+	 */
 	UFUNCTION(BlueprintPure, Category = "UnrealEditorExtensions|Asset")
 		static FLinearColor GetAssetClassDisplayColor(const FAssetData& AssetData);
 
 	/* 从资产获取对应的类
-	 * @param	Asset				任意资产
+	 * @param	Asset				Object资产对象
 	 */
 	UFUNCTION(BlueprintPure, Category = "UnrealEditorExtensions|Asset")
 		static UClass* GetClassFormAsset(UObject* Asset);
@@ -116,12 +145,13 @@ public:
 		static bool SetWorldSettingGameModeGameState(bool CurrentLevel, const UObject* WorldContextObject, AWorldSettings* WorldSettings, TSubclassOf<AGameModeBase> GameMode, TSubclassOf<AGameStateBase> GameState);
 
 /******************************************************************编辑器工具类函数*******************************************************/
-
+	/*关闭所有区域
+	 */
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Editor")
 		static void CloseAllAreas();
 
 	/* 运行编辑器蓝图或控件
-	 * @param	Asset			资产名称
+	 * @param	Asset			资产
 	 */
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Editor")
 		static void ExecuteRun(UObject* Asset);
@@ -132,9 +162,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "UnrealEditorExtensions|Editor")
 		static UWorld* GetEngineWorldContextObject();
 /******************************************************************场景视口工具类函数*******************************************************/
+	
 	/* 选定场景中的actor类
 	 * @param	Actor			设置要操作的Actor
-	 * @param	IsSelected		是否要选中此Actor
+	 * @param	IsSelected		是否要在场景内选中此Actor
 	 */
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Editor")
 		static void SelectedSceneActor(AActor* Actor,bool IsSelected=true);

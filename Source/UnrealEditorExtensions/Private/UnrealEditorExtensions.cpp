@@ -5,8 +5,6 @@
 
 void FUnrealEditorExtensionsModule::StartupModule()
 {
-	GEditor->GetTimerManager()->SetTimer(TimerHandle, FTimerDelegate::CreateRaw(this,&FUnrealEditorExtensionsModule::InitEditorBlueprint), 3, false);
-	
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 }
 
@@ -16,15 +14,6 @@ void FUnrealEditorExtensionsModule::ShutdownModule()
 	// we call this function before unloading the module.
 }
 
-void FUnrealEditorExtensionsModule::InitEditorBlueprint()
-{
-	FString Path = L"/Game/Extender/SimuEditorUtilityBlueprint";
-	FString Return;
-	UObject* Asset = UUnrealEditorExtensionsBPFLibrary::GetAssetOfPath(Path, Return);
-	if (Asset) {
-		UUnrealEditorExtensionsBPFLibrary::ExecuteRun(Asset);
-	}
-}
 
 #undef LOCTEXT_NAMESPACE
 	
