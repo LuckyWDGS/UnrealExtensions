@@ -196,8 +196,6 @@ UTexture2D* UUnrealEditorExtensionsBPFLibrary::GetObjectThumbnail(const FAssetDa
 
             return NULL;
         }
-        //ThumbnailTools::GetThumbnailForObject(InObject);
-        //ThumbnailTools::RenderThumbnail(AssetObject, ImageRes, ImageRes, ThumbnailTools::EThumbnailTextureFlushMode::AlwaysFlush, NULL, &ObjThumnail);
         TArray<uint8> ThumnailDatat = ObjThumnail->GetUncompressedImageData();
 
         IImageWrapperModule& ImageWrapperModule = FModuleManager::LoadModuleChecked<IImageWrapperModule>(FName("ImageWrapper"));
@@ -213,7 +211,6 @@ UTexture2D* UUnrealEditorExtensionsBPFLibrary::GetObjectThumbnail(const FAssetDa
                 }
         }
         return Texture;
-
 }
 
 TArray<FString> UUnrealEditorExtensionsBPFLibrary::GetAllProperties(UClass* Class)
