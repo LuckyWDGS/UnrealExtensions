@@ -1,8 +1,8 @@
 ﻿#include "UnrealEditorExtensionsBPFLibrary.h"
 
 #include "ActorFactories/ActorFactory.h"
-#include "AssetRegistry/IAssetRegistry.h"
-#include "AssetRegistry/AssetRegistryModule.h"
+#include "AssetRegistry/Public/IAssetRegistry.h"
+#include "AssetRegistry/Public/AssetRegistryModule.h"
 #include "AssetSelection.h"
 #include "AssetToolsModule.h"
 #include "AnimationEditorUtils.h"
@@ -260,7 +260,7 @@ void UUnrealEditorExtensionsBPFLibrary::NewAnimAssetToDisk(UAnimSequence* Animat
     FString AssetName = FPaths::GetBaseFilename(AssetPath);
 
     // Create a new package for the duplicated AnimSequence object
-    UPackage* Package = CreatePackage( *AssetPath);
+    UPackage* Package = CreatePackage(NULL, *AssetPath);
 
     // Duplicate the source AnimSequence object
     UAnimSequence* DuplicatedAnimSequence = DuplicateObject<UAnimSequence>(Animation, Package);
@@ -325,7 +325,8 @@ UObject* UUnrealEditorExtensionsBPFLibrary::GetAssetOfPath(const FString FilePat
     if (FilePath.Len() > 0) {
         FName PackgePath = *FPaths::GetPath(FilePath);
         TArray<FAssetData> OutAssetData;
-        const IAssetRegistry& AssetRegisty = IAssetRegistry::GetChecked();
+        FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
+        IAssetRegistry& AssetRegisty = AssetRegistryModule.Get();
         AssetRegisty.GetAssetsByPath(PackgePath, OutAssetData, false, false);//遍历索引目录下的所有资产
         for (auto i : OutAssetData) {
             if (i.PackageName.ToString() == FilePath) {

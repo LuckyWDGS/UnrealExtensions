@@ -1,5 +1,5 @@
 ﻿#include "UnrealExtensionsBPFLibrary.h"
-#include "AssetRegistry/IAssetRegistry.h"
+#include "AssetRegistry/Public/IAssetRegistry.h"
 
 #include "Components/SceneCaptureComponent2D.h"//SceneCaptureComponent2D组件的头文件
 #include "Components/Widget.h"
