@@ -73,11 +73,19 @@ public:
 	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|Regex")
 		static bool RegexMatch(const FString& Str, const FString& Pattern, TArray<FString>& Result);
 
-	///获取关卡的游戏路径  /Game/../../
+	/* 获取关卡的游戏路径  /Game/../../
+	* @param	WorldContextObject	世界上下文对象
+	*/
 	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|Paths", meta = (WorldContext = "WorldContextObject"))
 		static  FString GetLevelPath(const UObject* WorldContextObject);
 
-	//载入图像
+	/*
+	* 加载图像来自硬盘
+	* @param	ImagePath	图像路径
+	* @param	IsValid		是否有效
+	* @param	OutWidth	返回图像的宽
+	* @param	OutHeight	返回图像的高
+	*/
 	UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "2"),Category = "ExtendedContent|Texture")
 		static UTexture2D* LoadTexture2D(const FString& ImagePath, bool& IsValid, int32& OutWidth, int32& OutHeight);
 
