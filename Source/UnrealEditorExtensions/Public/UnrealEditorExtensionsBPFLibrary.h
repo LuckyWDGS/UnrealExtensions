@@ -165,7 +165,7 @@ public:
 	
 	/* 选定场景中的actor类
 	 * @param	Actor			设置要操作的Actor
-	 * @param	IsSelected		是否要选中此Actor
+	 * @param	IsSelected		是否要在场景内选中此Actor
 	 */
 	UFUNCTION(BlueprintCallable, Category = "UnrealEditorExtensions|Editor")
 		static void SelectedSceneActor(AActor* Actor,bool IsSelected=true);
