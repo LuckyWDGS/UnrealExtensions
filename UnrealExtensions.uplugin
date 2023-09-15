@@ -9,6 +9,8 @@
 	"CreatedByURL": "",
 	"DocsURL": "",
 	"MarketplaceURL": "",
+	"SupportURL": "1026017282@qq.com",
+	"EngineVersion": "5.2.0",
 	"SupportURL": "",
 	"EnabledByDefault": true,
 	"CanContainContent": true,
@@ -20,10 +22,10 @@
         "Type": "Runtime",
         "LoadingPhase": "PostEngineInit"
         },
-			{
-				"Name": "UnrealEditorExtensions",
-				"Type": "Editor",
-				"LoadingPhase": "PostEngineInit"
-			}
+		{
+		"Name": "UnrealEditorExtensions",
+		"Type": "Editor",
+		"LoadingPhase": "PostEngineInit"
+		}
     ]
 }
