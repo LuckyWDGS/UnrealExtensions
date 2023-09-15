@@ -13,7 +13,5 @@ public:
 	virtual void ShutdownModule() override;
 
 
-	FTimerHandle TimerHandle;
-	void InitEditorBlueprint();
 
 };
