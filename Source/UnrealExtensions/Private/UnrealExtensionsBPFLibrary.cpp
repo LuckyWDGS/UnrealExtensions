@@ -20,7 +20,6 @@
 #include "Kismet/KismetStringLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
-
 #include "Misc/FileHelper.h"
 
 AWorldSettings* UUnrealExtensionsBPFLibrary::GetWorldSetting(const UObject* WorldContextObject)
@@ -226,9 +225,9 @@ UTexture2D* UUnrealExtensionsBPFLibrary::LoadTexture2D(const FString& ImagePath,
                 IsValid = true;
                 OutWidth = ImageWrapper->GetWidth();
                 OutHeight = ImageWrapper->GetHeight();
-                void* TextureData = Texture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
+                void* TextureData = Texture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
                 FMemory::Memcpy(TextureData, UncompressedRGBA.GetData(), UncompressedRGBA.Num());
-                Texture->PlatformData->Mips[0].BulkData.Unlock();
+                Texture->GetPlatformData()->Mips[0].BulkData.Unlock();
                 Texture->UpdateResource();
             }
         }
@@ -318,20 +317,20 @@ void UUnrealExtensionsBPFLibrary::ColorToImage(const FString& InImagePath, TArra
     }
     else
     {
-        TArray<uint8>OutPNG;
+        TArray64<uint8>OutPNG;
 
         for (FColor& color : InColor)
         {
             color.A = 255;
         }
-        FImageUtils::CompressImageArray(InWidth, InHight, InColor, OutPNG);
+        FImageUtils::PNGCompressImageArray(InWidth, InHight, InColor, OutPNG);
         FFileHelper::SaveArrayToFile(OutPNG, *InImagePath);
 
     }
 
 }
 
-USoundWave* UUnrealExtensionsBPFLibrary::SoundForByteData(TArray<uint8> RawWaveData, FString SavePath, bool IsSave)
+USoundWave* UUnrealExtensionsBPFLibrary::SoundFormByteData(TArray<uint8> RawWaveData, FString SavePath, bool IsSave)
 {
     if (IsSave) {
         FFileHelper::SaveArrayToFile(RawWaveData, *SavePath);
@@ -342,27 +341,31 @@ USoundWave* UUnrealExtensionsBPFLibrary::SoundForByteData(TArray<uint8> RawWaveD
         return nullptr;
     }
 
-    USoundWave* Sound = NewObject<USoundWave>();
-
+    USoundWave* SoundWave = NewObject<USoundWave>();
     int32 ChannelCount = (int32)*WaveInfo.pChannels;
     check(ChannelCount > 0);
-
     int32 SizeOfSample = (*WaveInfo.pBitsPerSample) / 8;
-
     int32 NumSamples = WaveInfo.SampleDataSize / SizeOfSample;
     int32 NumFrames = NumSamples / ChannelCount;
 
-    Sound->RawData.Lock(LOCK_READ_WRITE);
-    void* LockedData = Sound->RawData.Realloc(RawWaveData.Num());
-    FMemory::Memcpy(LockedData, RawWaveData.GetData(), RawWaveData.Num());
-    Sound->RawData.Unlock();
+    SoundWave->RawData.UpdatePayload(FSharedBuffer::Clone(RawWaveData.GetData(), RawWaveData.Num()));
+    SoundWave->RawPCMData = (uint8*)FMemory::Malloc(WaveInfo.SampleDataSize);
+    FMemory::Memcpy(SoundWave->RawPCMData, WaveInfo.SampleDataStart, WaveInfo.SampleDataSize);
+    SoundWave->RawPCMDataSize = WaveInfo.SampleDataSize;
+    // Set Sound Wave Info
+    SoundWave->Duration = (float)NumFrames / *WaveInfo.pSamplesPerSec;
+    SoundWave->SetSampleRate(*WaveInfo.pSamplesPerSec);
+    SoundWave->NumChannels = ChannelCount;
+    SoundWave->TotalSamples = *WaveInfo.pSamplesPerSec * SoundWave->Duration;
 
-    Sound->Duration = (float)NumFrames / *WaveInfo.pSamplesPerSec;
-    Sound->SetSampleRate(*WaveInfo.pSamplesPerSec);
-    Sound->NumChannels = ChannelCount;
-    Sound->TotalSamples = *WaveInfo.pSamplesPerSec * Sound->Duration;
+    return SoundWave;
+}
 
-    return Sound;
+USoundWave* UUnrealExtensionsBPFLibrary::SoundFormFile(FString FileName)
+{
+    TArray<uint8> RawWaveData;
+    FFileHelper::LoadFileToArray(RawWaveData, *FileName);
+    return SoundFormByteData(RawWaveData,FString(), false);
 }
 
 

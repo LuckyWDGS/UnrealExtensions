@@ -34,6 +34,7 @@
 #include "LevelEditor/Public/LevelEditor.h"
 
 #include "UMGEditor/Public/WidgetBlueprint.h"
+#include "UObject/SavePackage.h"
 #include "UnrealEd/Public/LevelEditorViewport.h"
 #include "UnrealEd/Public/FileHelpers.h"
 
@@ -195,8 +196,6 @@ UTexture2D* UUnrealEditorExtensionsBPFLibrary::GetObjectThumbnail(const FAssetDa
 
             return NULL;
         }
-        //ThumbnailTools::GetThumbnailForObject(InObject);
-        //ThumbnailTools::RenderThumbnail(AssetObject, ImageRes, ImageRes, ThumbnailTools::EThumbnailTextureFlushMode::AlwaysFlush, NULL, &ObjThumnail);
         TArray<uint8> ThumnailDatat = ObjThumnail->GetUncompressedImageData();
 
         IImageWrapperModule& ImageWrapperModule = FModuleManager::LoadModuleChecked<IImageWrapperModule>(FName("ImageWrapper"));
@@ -205,14 +204,13 @@ UTexture2D* UUnrealEditorExtensionsBPFLibrary::GetObjectThumbnail(const FAssetDa
                 Texture = UTexture2D::CreateTransient(ObjThumnail->GetImageWidth(), ObjThumnail->GetImageHeight(), PF_B8G8R8A8);
                 if (Texture != nullptr)
                 {
-                    void* TextureData = Texture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
+                    void* TextureData = Texture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
                     FMemory::Memcpy(TextureData, ThumnailDatat.GetData(), ThumnailDatat.Num());
-                    Texture->PlatformData->Mips[0].BulkData.Unlock();
+                    Texture->GetPlatformData()->Mips[0].BulkData.Unlock();
                     Texture->UpdateResource();
                 }
         }
         return Texture;
-
 }
 
 TArray<FString> UUnrealEditorExtensionsBPFLibrary::GetAllProperties(UClass* Class)
@@ -262,7 +260,7 @@ void UUnrealEditorExtensionsBPFLibrary::NewAnimAssetToDisk(UAnimSequence* Animat
     FString AssetName = FPaths::GetBaseFilename(AssetPath);
 
     // Create a new package for the duplicated AnimSequence object
-    UPackage* Package = CreatePackage(nullptr, *AssetPath);
+    UPackage* Package = CreatePackage( *AssetPath);
 
     // Duplicate the source AnimSequence object
     UAnimSequence* DuplicatedAnimSequence = DuplicateObject<UAnimSequence>(Animation, Package);
@@ -276,7 +274,7 @@ void UUnrealEditorExtensionsBPFLibrary::NewAnimAssetToDisk(UAnimSequence* Animat
 
     // Save the duplicated AnimSequence object to disk
     FString PackageFileName = FPackageName::LongPackageNameToFilename(Package->GetName(), FPackageName::GetAssetPackageExtension());
-    UPackage::SavePackage(Package, DuplicatedAnimSequence, EObjectFlags::RF_Public | EObjectFlags::RF_Standalone, *PackageFileName, GError, nullptr, true, true, SAVE_NoError);
+    UPackage::SavePackage(Package, DuplicatedAnimSequence,*PackageFileName, FSavePackageArgs());
 }
 
 bool UUnrealEditorExtensionsBPFLibrary::IsLevelFromAssetData(const FAssetData& AssetData)
