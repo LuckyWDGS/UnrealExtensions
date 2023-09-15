@@ -125,6 +125,14 @@ public:
 		UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "1"), Category = "ExtendedContent|Sound")
 			static class USoundWave* SoundFormByteData(TArray<uint8> RawWaveData,FString SavePath,bool IsSave=false);
 
+	/* 音频文件转换成Sound对象
+	*  @param		FileName				文件路径
+	*  @param		return					返回一个USoundWave对象
+	*/
+		UFUNCTION(BlueprintCallable, Category = "ExtendedContent|Sound")
+			static class USoundWave* SoundFormFile(FString FileName);
+
+
 /******************************************************************UMG类工具函数***********************************************************************/
 
 private:
