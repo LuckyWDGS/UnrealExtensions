@@ -16,7 +16,6 @@ class UNREALEXTENSIONS_API UUnrealExtensionsBPFLibrary : public UBlueprintFuncti
 public: 
 	/* 获取当前的场景设置
 	 */
-
 	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|WorldSettings", meta = (WorldContext = "WorldContextObject"))
 		static  AWorldSettings* GetWorldSetting(const UObject* WorldContextObject);
 
@@ -58,7 +57,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UnrealExtensions|Operate")
 		static bool FindDirectory(const FString InPath,TArray<FString>&OutPutFolder,bool RemovePath=false);
 
-	/* 打开文件
+	/* Comand打开文件
 	 * @param	InPath			需要打开的文件路径
 	 */
 	UFUNCTION(BlueprintCallable, Category = "UnrealExtensions|Operate")
@@ -135,6 +134,12 @@ public:
 
 /******************************************************************UMG类工具函数***********************************************************************/
 
+/******************************************************************Calculate函数***********************************************************************/
+	
+	/* 计算FPS计时
+	*/
+		UFUNCTION(BlueprintPure, Category = "ExtendedContent|Calculate",meta = (WorldContext = "WorldContextObject"))
+			static int CalculateFPSTimings(const UObject* WorldContextObject);
 private:
 	
 };

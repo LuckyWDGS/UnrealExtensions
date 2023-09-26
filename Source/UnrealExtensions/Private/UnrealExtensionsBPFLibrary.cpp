@@ -17,9 +17,9 @@
 #include "ImageUtils.h"
 
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetStringLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
-
 #include "Misc/FileHelper.h"
 
 AWorldSettings* UUnrealExtensionsBPFLibrary::GetWorldSetting(const UObject* WorldContextObject)
@@ -146,7 +146,10 @@ bool UUnrealExtensionsBPFLibrary::FindDirectory(const FString InPath,TArray<FStr
 
 bool UUnrealExtensionsBPFLibrary::OpenbyFile(const FString InPath)
 {
+#if PLATFORM_WINDOWS
     return FWindowsPlatformMisc::OsExecute(TEXT("open"), *InPath);
+#endif
+    return false;
 }
 
 bool UUnrealExtensionsBPFLibrary::RegexMatch(const FString& Str, const FString& Pattern, TArray<FString>& Result)
@@ -366,6 +369,11 @@ USoundWave* UUnrealExtensionsBPFLibrary::SoundFormFile(FString FileName)
     TArray<uint8> RawWaveData;
     FFileHelper::LoadFileToArray(RawWaveData, *FileName);
     return SoundFormByteData(RawWaveData,FString(), false);
+}
+
+int UUnrealExtensionsBPFLibrary::CalculateFPSTimings(const UObject* WorldContextObject)
+{  
+    return 1.0f/UGameplayStatics::GetWorldDeltaSeconds(WorldContextObject);
 }
 
 
