@@ -51,6 +51,8 @@
 #include "Toolkits/AssetEditorToolkit.h"
 #include "Toolkits/AssetEditorToolkitMenuContext.h"
 
+#include "Materials/MaterialInstance.h"
+
 #include "ObjectTools.h"
 
 
@@ -402,6 +404,14 @@ void UUnrealEditorExtensionsBPFLibrary::SelectedSceneActor(AActor* Actor, bool I
     GEditor->SelectActor(Actor, IsSelected, true);
 }
 
+UMaterialInstanceConstant* UUnrealEditorExtensionsBPFLibrary::AssetDataToMaterialInstanceConstant(const FAssetData& AssetData)
+{
+    if (AssetData.GetAsset()) {
+        UMaterialInstanceConstant *MaterialInstanceConstant = Cast<UMaterialInstanceConstant>(AssetData.GetAsset());
+            return MaterialInstanceConstant;
+    }
+    return nullptr;
+}
 
 
 
