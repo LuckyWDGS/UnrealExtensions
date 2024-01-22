@@ -173,6 +173,9 @@ public:
 		static void SelectedSceneActor(AActor* Actor,bool IsSelected=true);
 
 /******************************************************************材质工具类函数*******************************************************/
+	/* 获取资产的材质实例常量
+	 * @param	AssetData			资产数据
+	 */
 	UFUNCTION(BlueprintPure, Category = "EditorExtensions|Editor|材质工具")
 		static UMaterialInstanceConstant* AssetDataToMaterialInstanceConstant(const FAssetData& AssetData);
 
