@@ -16,7 +16,6 @@ class UNREALEXTENSIONS_API UUnrealExtensionsBPFLibrary : public UBlueprintFuncti
 public: 
 	/* 获取当前的场景设置
 	 */
-
 	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|WorldSettings", meta = (WorldContext = "WorldContextObject"))
 		static  AWorldSettings* GetWorldSetting(const UObject* WorldContextObject);
 
@@ -58,7 +57,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UnrealExtensions|Operate")
 		static bool FindDirectory(const FString InPath,TArray<FString>&OutPutFolder,bool RemovePath=false);
 
-	/* 打开文件
+	/* Comand打开文件
 	 * @param	InPath			需要打开的文件路径
 	 */
 	UFUNCTION(BlueprintCallable, Category = "UnrealExtensions|Operate")
@@ -73,11 +72,19 @@ public:
 	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|Regex")
 		static bool RegexMatch(const FString& Str, const FString& Pattern, TArray<FString>& Result);
 
-	///获取关卡的游戏路径  /Game/../../
+	/* 获取关卡的游戏路径  /Game/../../
+	* @param	WorldContextObject	世界上下文对象
+	*/
 	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|Paths", meta = (WorldContext = "WorldContextObject"))
 		static  FString GetLevelPath(const UObject* WorldContextObject);
 
-	//载入图像
+	/*
+	* 加载图像来自硬盘
+	* @param	ImagePath	图像路径
+	* @param	IsValid		是否有效
+	* @param	OutWidth	返回图像的宽
+	* @param	OutHeight	返回图像的高
+	*/
 	UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "2"),Category = "ExtendedContent|Texture")
 		static UTexture2D* LoadTexture2D(const FString& ImagePath, bool& IsValid, int32& OutWidth, int32& OutHeight);
 
@@ -92,11 +99,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ExtendedContent|Image Conversion")
 		static bool ConvertAndResizeImage(const FString& ImagePath, const FString& SaveFilePath,  int32 NewWidth, int32 NewHeight, int32 Quality = 75);
 
-	/* 从UobjectAssetData中获取当前蓝图的对象
+	/* 从AssetData中获取对象
 	*  @param		AssetData			资产数据
 	*/
 	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|UObject")
-		static  UObject* GetBlueprintFormAssetData(const FAssetData& AssetData);
+		static  UObject* LoadObjectFormAssetData(const FAssetData& AssetData);
+
+	/* 从路径获取Object对象/Game/../..
+	*  @param		FString			要加载的对象路径
+	*/
+		UFUNCTION(BlueprintPure, Category = "UnrealExtensions|UObject")
+		static  UObject* LoadObject(const FString& Reference);
 
 	/* 场景截图并且保存到目录
 	*  @param		CaptureComponent2D		需要指定一个UE 2D相机
@@ -126,6 +139,22 @@ public:
 
 
 /******************************************************************UMG类工具函数***********************************************************************/
+
+/******************************************************************Calculate函数***********************************************************************/
+	
+	/* 计算FPS计时
+	*/
+		UFUNCTION(BlueprintPure, Category = "ExtendedContent|Calculate",meta = (WorldContext = "WorldContextObject"))
+			static int CalculateFPSTimings(const UObject* WorldContextObject);
+
+
+
+
+		UFUNCTION(BlueprintCallable, Category = "ExtendedContent|Call Func")
+			static bool CallFuncByName(UObject* TargetObject, FName FunctionName);
+
+		UFUNCTION(BlueprintCallable, Category = "Call Func")
+			static bool CallFuncByName_String(UObject* TargetObject, FName FunctionName, FString Param);
 
 private:
 	

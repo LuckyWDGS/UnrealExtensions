@@ -39,12 +39,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "EditorExtensions|ActorFactory")
 		static UActorFactory* GetActorFactory(const FAssetData& AssetData, bool bRequireValidObject = false);
 	
-	/* 获取资产数据的默认对象
-	 * @param	FAssetData				资产数据。
-	 * @param	return					返回一个A类对象。
-	 */
-	UFUNCTION(BlueprintCallable, Category = "EditorExtensions|ActorFactory")
-		static AActor* GetDefaultActor(const FAssetData& AssetData);
 
 	/* Editor从资产数据中生成对象到关卡视频
 	 * @param	FAssetData				资产数据。
@@ -173,11 +167,7 @@ public:
 		static void SelectedSceneActor(AActor* Actor,bool IsSelected=true);
 
 /******************************************************************材质工具类函数*******************************************************/
-	/* 获取资产的材质实例常量
-	 * @param	AssetData			资产数据
-	 */
-	UFUNCTION(BlueprintPure, Category = "EditorExtensions|Editor|材质工具")
-		static UMaterialInstanceConstant* AssetDataToMaterialInstanceConstant(const FAssetData& AssetData);
+
 
 private:
 	
