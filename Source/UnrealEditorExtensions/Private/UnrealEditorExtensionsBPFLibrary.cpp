@@ -51,6 +51,8 @@
 #include "Toolkits/AssetEditorToolkit.h"
 #include "Toolkits/AssetEditorToolkitMenuContext.h"
 
+#include "Materials/MaterialInstance.h"
+
 #include "ObjectTools.h"
 
 
@@ -97,15 +99,6 @@ UActorFactory* UUnrealEditorExtensionsBPFLibrary::GetActorFactory(const FAssetDa
         Asset = AssetData.GetAsset();
     }
     return FActorFactoryAssetProxy::GetFactoryForAssetObject(Asset);
-}
-
-AActor* UUnrealEditorExtensionsBPFLibrary:: GetDefaultActor(const FAssetData& AssetData)
-{
-    UActorFactory* ActorFactory = GetActorFactory(AssetData);
-    if (ActorFactory) {
-        return ActorFactory->GetDefaultActor(AssetData);
-    }
-    return NULL;
 }
 
 AActor* UUnrealEditorExtensionsBPFLibrary::CreateActor(const UObject* WorldContextObject, const FAssetData& AssetData, FTransform SpawnTransform)
@@ -402,7 +395,6 @@ void UUnrealEditorExtensionsBPFLibrary::SelectedSceneActor(AActor* Actor, bool I
 {
     GEditor->SelectActor(Actor, IsSelected, true);
 }
-
 
 
 
