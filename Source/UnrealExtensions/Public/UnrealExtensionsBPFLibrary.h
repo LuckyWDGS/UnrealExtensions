@@ -85,7 +85,7 @@ public:
 	* @param	OutWidth	返回图像的宽
 	* @param	OutHeight	返回图像的高
 	*/
-	UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "2"),Category = "ExtendedContent|Texture")
+	UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "2"),Category = "UnrealExtensions|Texture")
 		static UTexture2D* LoadTexture2D(const FString& ImagePath, bool& IsValid, int32& OutWidth, int32& OutHeight);
 
 	/*
@@ -96,26 +96,38 @@ public:
 		* @param	NewHeight			新的分辨率高的大小
 		* @param	Quality				质量默认为75
 	*/
-	UFUNCTION(BlueprintCallable, Category = "ExtendedContent|Image Conversion")
+	UFUNCTION(BlueprintCallable, Category = "UnrealExtensions|Image Conversion")
 		static bool ConvertAndResizeImage(const FString& ImagePath, const FString& SaveFilePath,  int32 NewWidth, int32 NewHeight, int32 Quality = 75);
 
 	/* 从AssetData中获取对象
 	*  @param		AssetData			资产数据
 	*/
-	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|UObject")
+	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|StaticLoad")
+		static UClass* StaticLoadClass(const FString& Reference);
+
+	/* 从AssetData中获取对象
+	*  @param		AssetData			资产数据
+	*/
+	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|StaticLoad")
 		static  UObject* LoadObjectFormAssetData(const FAssetData& AssetData);
 
-	/* 从路径获取Object对象/Game/../..
+	/* 从路径获取静态Object对象/Game/../..
 	*  @param		FString			要加载的对象路径
 	*/
-		UFUNCTION(BlueprintPure, Category = "UnrealExtensions|UObject")
+	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|StaticLoad")
 		static  UObject* LoadObject(const FString& Reference);
+
+	/* 获取类的默认Object对象/Game/../..
+	 *  @param		Class			类
+	 */
+	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|StaticLoad")
+		static  UObject* GetClassDefaultObject(TSubclassOf<UObject>Class);
 
 	/* 场景截图并且保存到目录
 	*  @param		CaptureComponent2D		需要指定一个UE 2D相机
 	*  @param		SavePath				截图需要保存的路径
 	*/
-	UFUNCTION(BlueprintCallable, Category = "ExtendedContent|ScreenShot")
+	UFUNCTION(BlueprintCallable, Category = "UnrealExtensions|ScreenShot")
 		static void ScreenShot(class USceneCaptureComponent2D* CaptureComponent2D,const FString& SavePath);
 		//将颜色数据提取
 		static void ColorToImage(const FString& InImagePath, TArray<FColor>InColor, int32 InWidth, int32 InHight);//将颜色数据提取
@@ -127,14 +139,14 @@ public:
 	*  @param		IsSave					音频是否需要保存到本地
 	*  @param		return					返回一个USoundWave对象
 	*/
-		UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "1"), Category = "ExtendedContent|Sound")
+		UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "1"), Category = "UnrealExtensions|Sound")
 			static class USoundWave* SoundFormByteData(TArray<uint8> RawWaveData,FString SavePath,bool IsSave=false);
 
 	/* 音频文件转换成Sound对象
 	*  @param		FileName				文件路径
 	*  @param		return					返回一个USoundWave对象
 	*/
-		UFUNCTION(BlueprintCallable, Category = "ExtendedContent|Sound")
+		UFUNCTION(BlueprintCallable, Category = "UnrealExtensions|Sound")
 			static class USoundWave* SoundFormFile(FString FileName);
 
 
@@ -144,19 +156,16 @@ public:
 	
 	/* 计算FPS计时
 	*/
-		UFUNCTION(BlueprintPure, Category = "ExtendedContent|Calculate",meta = (WorldContext = "WorldContextObject"))
+		UFUNCTION(BlueprintPure, Category = "UnrealExtensions|Calculate",meta = (WorldContext = "WorldContextObject"))
 			static int CalculateFPSTimings(const UObject* WorldContextObject);
 
 
-
-
-		UFUNCTION(BlueprintCallable, Category = "ExtendedContent|Call Func")
+		UFUNCTION(BlueprintCallable, Category = "UnrealExtensions|Call Func")
 			static bool CallFuncByName(UObject* TargetObject, FName FunctionName);
 
-		UFUNCTION(BlueprintCallable, Category = "Call Func")
+		UFUNCTION(BlueprintCallable, Category = "UnrealExtensions|Call Func")
 			static bool CallFuncByName_String(UObject* TargetObject, FName FunctionName, FString Param);
 
 private:
-	
 };
 

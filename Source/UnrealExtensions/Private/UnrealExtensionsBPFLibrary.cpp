@@ -269,11 +269,55 @@ bool UUnrealExtensionsBPFLibrary::ConvertAndResizeImage(const FString& ImagePath
         }
         return false;
 }
+FString AnalysisClassName(const FString& Name)
+{
+    if (Name == TEXT("Actor"))
+    {
+        return TEXT("Blueprint");
+    }
+
+    return Name;
+}
+template<class T>
+T* StaticLoadPakObject(const FString& Filename, TCHAR* Suffix = TEXT(""))
+{
+    const FString ObjectName = AnalysisClassName(T::StaticClass()->GetName()) + TEXT("'") + Filename + TEXT(".") + FPaths::GetCleanFilename(Filename) + Suffix + TEXT("'");
+
+    return Cast<T>(StaticLoadObject(T::StaticClass(), nullptr, *ObjectName));;
+}
+
+//WidgetBlueprint'/Game/ThirdPersonCPP/Blueprints/NewWidgetBlueprint.NewWidgetBlueprint'
+//Blueprint'/Game/ThirdPersonCPP/Blueprints/ThirdPersonCharacter.ThirdPersonCharacter'
+//Material'/Game/ThirdPerson/Meshes/RampMaterial.RampMaterial'
+//StaticMesh'/Game/ThirdPerson/Meshes/Ramp_StaticMesh.Ramp_StaticMesh'
+template<class T>
+T* StaticLoadObjectFromPak(const FString& Filename, TCHAR* Suffix = TEXT(""))//Filename = /Game/ThirdPerson/Meshes/RampMaterial
+{
+    T* ObjectInstance = StaticLoadPakObject<T>(Filename, Suffix);
+    //if (ObjectInstance == nullptr)
+    //{
+    //	RefreshAsset(FileType);
+
+    //	if (UpdateAsset(Filename, FileType))
+    //	{
+    //		ObjectInstance = Cast<T>(StaticLoadPakObject<T>(Filename, Suffix));
+    //	}
+    //}
+
+    return ObjectInstance;
+}
+
+UClass* UUnrealExtensionsBPFLibrary::StaticLoadClass(const FString& Reference)
+{
+    return StaticLoadObjectFromPak<UClass>(Reference, TEXT("_C"));
+}
 
 UObject* UUnrealExtensionsBPFLibrary::LoadObjectFormAssetData(const FAssetData& AssetData)
 {
     if (AssetData.GetAsset()) {
-        return Cast<UObject>(AssetData.GetAsset());
+        if (Cast<UBlueprint>(AssetData.GetAsset())) {
+            return Cast<UBlueprint>(AssetData.GetAsset())->GeneratedClass->GetDefaultObject();
+        }
     }
     return nullptr;
 }
@@ -281,6 +325,11 @@ UObject* UUnrealExtensionsBPFLibrary::LoadObjectFormAssetData(const FAssetData& 
 UObject* UUnrealExtensionsBPFLibrary::LoadObject(const FString& Reference)
 {
     return Cast<UObject>(StaticLoadObject(UObject::StaticClass(), nullptr, *Reference));
+}
+
+UObject* UUnrealExtensionsBPFLibrary::GetClassDefaultObject(TSubclassOf<UObject> Class)
+{
+    return Class->GetDefaultObject();
 }
 
 void UUnrealExtensionsBPFLibrary::ScreenShot(USceneCaptureComponent2D* CaptureComponent2D, const FString& SavePath)
@@ -407,8 +456,8 @@ bool UUnrealExtensionsBPFLibrary::CallFuncByName_String(UObject* TargetObject, F
         {
             uint8* Buffer = static_cast<uint8*>(FMemory_Alloca(TargetFunction->ParmsSize));
             FMemory::Memzero(Buffer, TargetFunction->ParmsSize);
-            for (TFieldIterator<UProperty> It(TargetFunction); It && It->HasAnyPropertyFlags(CPF_Parm); ++It) {
-                const UProperty* FunctionProperty = *It;
+            for (TFieldIterator<FProperty> It(TargetFunction); It && It->HasAnyPropertyFlags(CPF_Parm); ++It) {
+                const FProperty* FunctionProperty = *It;
                 FString Type = FunctionProperty->GetCPPType();
                 if (Type == "FString") {
                     *FunctionProperty->ContainerPtrToValuePtr<FString>(Buffer) = Param;
@@ -422,6 +471,5 @@ bool UUnrealExtensionsBPFLibrary::CallFuncByName_String(UObject* TargetObject, F
     // ensureMsgf(false,TEXT("对象方法未找到！"));
     return false;
 }
-
 
 
