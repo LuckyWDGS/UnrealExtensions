@@ -314,10 +314,15 @@ UClass* UUnrealExtensionsBPFLibrary::StaticLoadClass(const FString& Reference)
 
 UObject* UUnrealExtensionsBPFLibrary::LoadObjectFormAssetData(const FAssetData& AssetData)
 {
+    UObject* DefaultObejct;
     if (AssetData.GetAsset()) {
-        if (Cast<UBlueprint>(AssetData.GetAsset())) {
-            return Cast<UBlueprint>(AssetData.GetAsset())->GeneratedClass->GetDefaultObject();
+        UBlueprintCore *Blueprint = Cast<UBlueprintCore>(AssetData.GetAsset());
+        if (Blueprint) {
+            DefaultObejct = Blueprint->GeneratedClass->GetDefaultObject();
+            return DefaultObejct;
         }
+        DefaultObejct = AssetData.GetAsset();
+        return DefaultObejct;
     }
     return nullptr;
 }
