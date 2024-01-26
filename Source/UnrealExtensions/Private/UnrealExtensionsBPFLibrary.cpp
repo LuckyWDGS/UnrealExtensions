@@ -270,16 +270,17 @@ bool UUnrealExtensionsBPFLibrary::ConvertAndResizeImage(const FString& ImagePath
         return false;
 }
 
-UObject* UUnrealExtensionsBPFLibrary::GetBlueprintFormAssetData(const FAssetData& AssetData)
+UObject* UUnrealExtensionsBPFLibrary::LoadObjectFormAssetData(const FAssetData& AssetData)
 {
     if (AssetData.GetAsset()) {
-
-        UBlueprint* Blueprint = Cast<UBlueprint>(AssetData.GetAsset());
-        if (Blueprint) {
-            return Blueprint->GeneratedClass->GetDefaultObject();
-        }
+        return Cast<UObject>(AssetData.GetAsset());
     }
     return nullptr;
+}
+
+UObject* UUnrealExtensionsBPFLibrary::LoadObject(const FString& Reference)
+{
+    return Cast<UObject>(StaticLoadObject(UObject::StaticClass(), nullptr, *Reference));
 }
 
 void UUnrealExtensionsBPFLibrary::ScreenShot(USceneCaptureComponent2D* CaptureComponent2D, const FString& SavePath)
@@ -375,6 +376,51 @@ USoundWave* UUnrealExtensionsBPFLibrary::SoundFormFile(FString FileName)
 int UUnrealExtensionsBPFLibrary::CalculateFPSTimings(const UObject* WorldContextObject)
 {  
     return 1.0f/UGameplayStatics::GetWorldDeltaSeconds(WorldContextObject);
+}
+
+bool UUnrealExtensionsBPFLibrary::CallFuncByName(UObject* TargetObject, FName FunctionName)
+{
+    UClass* TargetSMCClass = TargetObject->GetClass();
+    if (TargetSMCClass)
+    {
+        UFunction* TargetFunction = TargetSMCClass->FindFunctionByName(FunctionName);
+        if (TargetFunction)
+        {
+            uint8* Buffer = static_cast<uint8*>(FMemory_Alloca(TargetFunction->ParmsSize));
+            FMemory::Memzero(Buffer, TargetFunction->ParmsSize);
+            UE_LOG(LogTemp, Log, TEXT("调用TargetObject：%s的%s"), *TargetObject->GetName(), *FunctionName.ToString());
+            TargetObject->ProcessEvent(TargetFunction, Buffer);
+            return true;
+        }
+    }
+    // ensureMsgf(false,TEXT("对象方法未找到！"));
+    return false;
+}
+
+bool UUnrealExtensionsBPFLibrary::CallFuncByName_String(UObject* TargetObject, FName FunctionName, FString Param)
+{
+    UClass* TargetSMCClass = TargetObject->GetClass();
+    if (TargetSMCClass)
+    {
+        UFunction* TargetFunction = TargetSMCClass->FindFunctionByName(FunctionName);
+        if (TargetFunction)
+        {
+            uint8* Buffer = static_cast<uint8*>(FMemory_Alloca(TargetFunction->ParmsSize));
+            FMemory::Memzero(Buffer, TargetFunction->ParmsSize);
+            for (TFieldIterator<UProperty> It(TargetFunction); It && It->HasAnyPropertyFlags(CPF_Parm); ++It) {
+                const UProperty* FunctionProperty = *It;
+                FString Type = FunctionProperty->GetCPPType();
+                if (Type == "FString") {
+                    *FunctionProperty->ContainerPtrToValuePtr<FString>(Buffer) = Param;
+                }
+            }
+            UE_LOG(LogTemp, Log, TEXT("调用TargetObject：%s的%s"), *TargetObject->GetName(), *FunctionName.ToString());
+            TargetObject->ProcessEvent(TargetFunction, Buffer);
+            return true;
+        }
+    }
+    // ensureMsgf(false,TEXT("对象方法未找到！"));
+    return false;
 }
 
 

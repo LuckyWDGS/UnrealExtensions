@@ -101,15 +101,6 @@ UActorFactory* UUnrealEditorExtensionsBPFLibrary::GetActorFactory(const FAssetDa
     return FActorFactoryAssetProxy::GetFactoryForAssetObject(Asset);
 }
 
-AActor* UUnrealEditorExtensionsBPFLibrary:: GetDefaultActor(const FAssetData& AssetData)
-{
-    UActorFactory* ActorFactory = GetActorFactory(AssetData);
-    if (ActorFactory) {
-        return ActorFactory->GetDefaultActor(AssetData);
-    }
-    return NULL;
-}
-
 AActor* UUnrealEditorExtensionsBPFLibrary::CreateActor(const UObject* WorldContextObject, const FAssetData& AssetData, FTransform SpawnTransform)
 {
     // 开始一个新的事务
@@ -402,15 +393,6 @@ UWorld* UUnrealEditorExtensionsBPFLibrary::GetEngineWorldContextObject()
 void UUnrealEditorExtensionsBPFLibrary::SelectedSceneActor(AActor* Actor, bool IsSelected)
 {
     GEditor->SelectActor(Actor, IsSelected, true);
-}
-
-UMaterialInstanceConstant* UUnrealEditorExtensionsBPFLibrary::AssetDataToMaterialInstanceConstant(const FAssetData& AssetData)
-{
-    if (AssetData.GetAsset()) {
-        UMaterialInstanceConstant *MaterialInstanceConstant = Cast<UMaterialInstanceConstant>(AssetData.GetAsset());
-            return MaterialInstanceConstant;
-    }
-    return nullptr;
 }
 
 

@@ -99,11 +99,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ExtendedContent|Image Conversion")
 		static bool ConvertAndResizeImage(const FString& ImagePath, const FString& SaveFilePath,  int32 NewWidth, int32 NewHeight, int32 Quality = 75);
 
-	/* 从UobjectAssetData中获取当前蓝图的对象
+	/* 从AssetData中获取对象
 	*  @param		AssetData			资产数据
 	*/
 	UFUNCTION(BlueprintPure, Category = "UnrealExtensions|UObject")
-		static  UObject* GetBlueprintFormAssetData(const FAssetData& AssetData);
+		static  UObject* LoadObjectFormAssetData(const FAssetData& AssetData);
+
+	/* 从路径获取Object对象/Game/../..
+	*  @param		FString			要加载的对象路径
+	*/
+		UFUNCTION(BlueprintPure, Category = "UnrealExtensions|UObject")
+		static  UObject* LoadObject(const FString& Reference);
 
 	/* 场景截图并且保存到目录
 	*  @param		CaptureComponent2D		需要指定一个UE 2D相机
@@ -140,6 +146,16 @@ public:
 	*/
 		UFUNCTION(BlueprintPure, Category = "ExtendedContent|Calculate",meta = (WorldContext = "WorldContextObject"))
 			static int CalculateFPSTimings(const UObject* WorldContextObject);
+
+
+
+
+		UFUNCTION(BlueprintCallable, Category = "ExtendedContent|Call Func")
+			static bool CallFuncByName(UObject* TargetObject, FName FunctionName);
+
+		UFUNCTION(BlueprintCallable, Category = "Call Func")
+			static bool CallFuncByName_String(UObject* TargetObject, FName FunctionName, FString Param);
+
 private:
 	
 };
